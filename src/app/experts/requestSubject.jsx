@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -6,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
-export function ContactForm() {
+export default function RequestSubject() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -31,25 +32,26 @@ export function ContactForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
         setStatus({
           type: "success",
-          message: "Your message has been sent successfully! We'll get back to you soon."
+          message:
+            "Your message has been sent successfully! We'll get back to you soon.",
         });
         setFormData({ name: "", email: "", subject: "", message: "" });
       } else {
         setStatus({
           type: "error",
-          message: data.error || "Failed to send message. Please try again."
+          message: data.error || "Failed to send message. Please try again.",
         });
       }
     } catch (error) {
       setStatus({
         type: "error",
-        message: "Network error. Please check your connection and try again."
+        message: "Network error. Please check your connection and try again.",
       });
     } finally {
       setLoading(false);
@@ -68,7 +70,10 @@ export function ContactForm() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col">
-                <Label htmlFor="name" className="text-gray-700 dark:text-gray-300">
+                <Label
+                  htmlFor="name"
+                  className="text-gray-700 dark:text-gray-300"
+                >
                   Name
                 </Label>
                 <Input
@@ -82,7 +87,10 @@ export function ContactForm() {
               </div>
 
               <div className="flex flex-col">
-                <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">
+                <Label
+                  htmlFor="email"
+                  className="text-gray-700 dark:text-gray-300"
+                >
                   Email
                 </Label>
                 <Input
@@ -97,7 +105,10 @@ export function ContactForm() {
               </div>
 
               <div className="flex flex-col">
-                <Label htmlFor="subject" className="text-gray-700 dark:text-gray-300">
+                <Label
+                  htmlFor="subject"
+                  className="text-gray-700 dark:text-gray-300"
+                >
                   Subject
                 </Label>
                 <Input
@@ -111,7 +122,10 @@ export function ContactForm() {
               </div>
 
               <div className="flex flex-col">
-                <Label htmlFor="message" className="text-gray-700 dark:text-gray-300">
+                <Label
+                  htmlFor="message"
+                  className="text-gray-700 dark:text-gray-300"
+                >
                   Message
                 </Label>
                 <Textarea
@@ -124,11 +138,7 @@ export function ContactForm() {
                 />
               </div>
             </div>
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={loading}
-            >
+            <Button type="submit" className="w-full" disabled={loading}>
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -139,11 +149,13 @@ export function ContactForm() {
               )}
             </Button>
             {status.message && (
-              <div className={`p-4 rounded-md ${
-                status.type === "success" 
-                  ? "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400" 
-                  : "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400"
-              }`}>
+              <div
+                className={`p-4 rounded-md ${
+                  status.type === "success"
+                    ? "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400"
+                    : "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400"
+                }`}
+              >
                 {status.message}
               </div>
             )}

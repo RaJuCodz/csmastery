@@ -74,6 +74,7 @@ import {
   FileKey2,
   FileLock2,
   FileUnlock2,
+  Mail,
 } from "lucide-react";
 
 const subjectIcons = {
@@ -142,6 +143,15 @@ const ExpertCard = ({ subject, description }) => {
     setIsHovered(true);
   };
 
+  const handleEmailClick = () => {
+    const emailSubject = `Question about ${subject}`;
+    const emailBody = `Hello,\n\nI am interested in learning more about ${subject}.\n\n`;
+    const mailtoLink = `mailto:?subject=${encodeURIComponent(
+      emailSubject
+    )}&body=${encodeURIComponent(emailBody)}`;
+    window.location.href = mailtoLink;
+  };
+
   const subjectSlug = subject.toLowerCase().replace(/\s+/g, "-");
 
   return (
@@ -198,29 +208,24 @@ const ExpertCard = ({ subject, description }) => {
 
           {/* Content */}
           <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-4">
-              <motion.div
-                className="p-3 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                transition={{ type: "spring", stiffness: 300 }}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-3">
+                {subjectIcons[subject] || <Code className="w-8 h-8" />}
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  {subject}
+                </h3>
+              </div>
+              <button
+                onClick={handleEmailClick}
+                className="p-2 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors duration-200"
+                title="Email expert"
               >
-                {subjectIcons[subject]}
-              </motion.div>
-              <motion.h3
-                className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                {subject}
-              </motion.h3>
+                <Mail className="w-5 h-5" />
+              </button>
             </div>
-            <motion.p
-              className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed"
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
+            <p className="text-gray-600 dark:text-gray-300 text-sm">
               {description}
-            </motion.p>
+            </p>
           </div>
 
           {/* Bottom Section */}

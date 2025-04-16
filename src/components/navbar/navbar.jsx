@@ -17,6 +17,8 @@ const RIGHT_LIST = [
   { id: "about", text: "About Us", href: "#about", icon: "Info" },
 ];
 
+const LOGO_NAME = "Mentor.AI";
+
 export default function Navbar() {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
@@ -49,21 +51,35 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed w-full z-50 transition-all duration-300 ${
+      className={`fixed w-full z-50 transition-all duration-300 shadow-md border-b border-gray-800 ${
         isScrolled
-          ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-lg"
-          : "bg-transparent"
+          ? "bg-gray-950/95 dark:bg-gray-950/95 backdrop-blur-md"
+          : "bg-gray-950/90 dark:bg-gray-950/90"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 flex items-center gap-2">
             <Link
               href="/"
-              className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all duration-300"
+              className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 drop-shadow-lg tracking-tight select-none hover:from-purple-500 hover:to-pink-500 transition-all duration-300"
+              aria-label="Mentor.AI Home"
             >
-              CS Mastery
+              <span className="inline-block align-middle">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block mr-1">
+                  <circle cx="11" cy="11" r="11" fill="url(#mentorai-gradient)" />
+                  <text x="11" y="15" textAnchor="middle" fontSize="11" fill="#fff" fontFamily="Arial" fontWeight="bold">M</text>
+                  <defs>
+                    <linearGradient id="mentorai-gradient" x1="0" y1="0" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#a78bfa" />
+                      <stop offset="0.5" stopColor="#f472b6" />
+                      <stop offset="1" stopColor="#fde68a" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </span>
+              {LOGO_NAME}
             </Link>
           </div>
 
@@ -86,7 +102,7 @@ export default function Navbar() {
               {isHomePage && (
                 <button
                   onClick={scrollToFAQ}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-700 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-300"
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-200 hover:text-yellow-400 transition-all duration-300 font-semibold"
                 >
                   <LucideIcons.HelpCircle size={18} />
                   FAQ
@@ -95,7 +111,7 @@ export default function Navbar() {
               {isHomePage && (
                 <button
                   onClick={scrollToAbout}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-700 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-300"
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-200 hover:text-yellow-400 transition-all duration-300 font-semibold"
                 >
                   About Us
                 </button>
@@ -108,8 +124,9 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+            className="md:hidden p-2 rounded-lg text-gray-200 hover:text-yellow-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Open navigation menu"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -124,12 +141,13 @@ export default function Navbar() {
             : "opacity-0 -translate-y-full pointer-events-none"
         }`}
       >
-        <div className="absolute inset-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md">
+        <div className="absolute inset-0 bg-gray-950/98 backdrop-blur-md">
           <div className="flex flex-col h-full">
             <div className="flex justify-end p-4">
               <button
-                className="p-2 rounded-lg text-gray-700 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                className="p-2 rounded-lg text-gray-200 hover:text-yellow-400"
                 onClick={() => setIsMobileMenuOpen(false)}
+                aria-label="Close navigation menu"
               >
                 <X size={24} />
               </button>
@@ -144,14 +162,14 @@ export default function Navbar() {
                     icon={IconComponent ? <IconComponent size={20} /> : null}
                     key={item.id}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-lg"
+                    className="text-lg text-gray-200 hover:text-yellow-400 font-semibold"
                   />
                 );
               })}
               {isHomePage && (
                 <button
                   onClick={scrollToFAQ}
-                  className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-300"
+                  className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-gray-200 hover:text-yellow-400 transition-all duration-300 font-semibold"
                 >
                   <LucideIcons.HelpCircle size={20} />
                   FAQ
@@ -160,12 +178,12 @@ export default function Navbar() {
               {isHomePage && (
                 <button
                   onClick={scrollToAbout}
-                  className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-300"
+                  className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-gray-200 hover:text-yellow-400 transition-all duration-300 font-semibold"
                 >
                   About Us
                 </button>
               )}
-              <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
+              <div className="pt-6 border-t border-gray-700">
                 <Profile />
               </div>
             </div>
