@@ -7,7 +7,6 @@ import Cookies from "js-cookie";
 import { Loader, User, Bot } from "lucide-react";
 import remarkGfm from "remark-gfm";
 import { Highlight, themes } from "prism-react-renderer";
-import { Playground } from "./playground";
 import jsPDF from "jspdf";
 
 export const ChatComp = ({ subject }) => {
@@ -27,7 +26,6 @@ If the user requests notes, generate them in a clean, readable format for studen
   const [username, setUsername] = useState("User"); // Default username
   const cookieKey = `chat_${subject.toLowerCase().replace(/\s+/g, "_")}`;
   const [hasShownGreeting, setHasShownGreeting] = useState(false);
-  const [isPlaygroundOpen, setIsPlaygroundOpen] = useState(false);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom
@@ -142,12 +140,12 @@ If the user requests notes, generate them in a clean, readable format for studen
     const lineHeight = 18;
     const maxLineWidth = pdfWidth - 2 * margin;
 
-    // Title and meta
+    // Title and meta (plain, no color)
     pdf.setFontSize(18);
-    pdf.setTextColor(90, 36, 170); // Purple title
+    pdf.setTextColor(0, 0, 0);
     pdf.text("Study Notes", pdfWidth / 2, margin + 10, { align: "center" });
     pdf.setFontSize(10);
-    pdf.setTextColor(80, 80, 80); // Subtitle gray
+    pdf.setTextColor(0, 0, 0);
     pdf.text(
       `Subject: ${subject}    Date: ${new Date().toLocaleString()}`,
       pdfWidth / 2,
@@ -155,34 +153,45 @@ If the user requests notes, generate them in a clean, readable format for studen
       { align: "center" }
     );
     y += 10;
-    pdf.setFontSize(12);
+    // Use a slightly larger font for chat content
+    pdf.setFontSize(11);
 
     let i = 0;
     while (i < messages.length) {
       if (messages[i].sender === "user") {
         pdf.setFont(undefined, "bold");
-        pdf.setTextColor(30, 144, 255); // Dodger blue for Question
+        pdf.setTextColor(0, 0, 0);
         pdf.text("Question:", margin, y);
         pdf.setFont(undefined, "normal");
-        pdf.setTextColor(33, 37, 41); // Default text
         y += lineHeight;
         const userLines = pdf.splitTextToSize(messages[i].text.replace(/\*\*/g, ''), maxLineWidth);
-        userLines.forEach(line => {
-          pdf.text(line, margin + 24, y);
+        // --- SPLIT userLines ACROSS PAGES ---
+        for (let idx = 0; idx < userLines.length; idx++) {
+          if (y > pdf.internal.pageSize.getHeight() - margin - lineHeight) {
+            pdf.addPage();
+            y = margin;
+          }
+          pdf.text(userLines[idx], margin + 16, y);
           y += lineHeight;
-        });
+        }
+        y += 12;
         if (i + 1 < messages.length && messages[i + 1].sender === "bot") {
           pdf.setFont(undefined, "bold");
-          pdf.setTextColor(76, 175, 80); // Green for Answer
+          pdf.setTextColor(0, 0, 0);
           pdf.text("Answer:", margin, y);
           pdf.setFont(undefined, "normal");
-          pdf.setTextColor(33, 37, 41); // Default text
           y += lineHeight;
           const botLines = pdf.splitTextToSize(messages[i + 1].text.replace(/\*\*/g, ''), maxLineWidth);
-          botLines.forEach(line => {
-            pdf.text(line, margin + 24, y);
+          // --- SPLIT botLines ACROSS PAGES ---
+          for (let idx = 0; idx < botLines.length; idx++) {
+            if (y > pdf.internal.pageSize.getHeight() - margin - lineHeight) {
+              pdf.addPage();
+              y = margin;
+            }
+            pdf.text(botLines[idx], margin + 16, y);
             y += lineHeight;
-          });
+          }
+          y += 12;
           i += 2;
         } else {
           i += 1;
@@ -190,18 +199,22 @@ If the user requests notes, generate them in a clean, readable format for studen
         y += lineHeight / 2;
       } else if (messages[i].sender === "bot") {
         pdf.setFont(undefined, "bold");
-        pdf.setTextColor(156, 39, 176); // Purple for Bot
+        pdf.setTextColor(0, 0, 0);
         pdf.text("Bot:", margin, y);
         pdf.setFont(undefined, "normal");
-        pdf.setTextColor(33, 37, 41); // Default text
         y += lineHeight;
         const botLines = pdf.splitTextToSize(messages[i].text.replace(/\*\*/g, ''), maxLineWidth);
-        botLines.forEach(line => {
-          pdf.text(line, margin + 24, y);
+        // --- SPLIT botLines ACROSS PAGES ---
+        for (let idx = 0; idx < botLines.length; idx++) {
+          if (y > pdf.internal.pageSize.getHeight() - margin - lineHeight) {
+            pdf.addPage();
+            y = margin;
+          }
+          pdf.text(botLines[idx], margin + 16, y);
           y += lineHeight;
-        });
+        }
+        y += 12;
         i += 1;
-        y += lineHeight / 2;
       } else {
         i += 1;
       }
@@ -344,7 +357,6 @@ If the user requests notes, generate them in a clean, readable format for studen
               <div className="w-full max-w-2xl flex items-end gap-2 bg-[#23232b] rounded-xl shadow-lg border border-gray-800 px-4 py-3">
                 <InputPanel
                   onSendMessage={handleSendMessage}
-                  onTogglePlayground={() => setIsPlaygroundOpen(!isPlaygroundOpen)}
                   inputClassName="h-10 text-base px-4 py-2 rounded border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-400 flex-1 bg-gray-900 text-white placeholder-gray-400"
                 />
                 <button
@@ -359,11 +371,6 @@ If the user requests notes, generate them in a clean, readable format for studen
           </div>
         </div>
       </div>
-      {/* Playground Component */}
-      <Playground
-        isOpen={isPlaygroundOpen}
-        onClose={() => setIsPlaygroundOpen(false)}
-      />
     </div>
   );
 };

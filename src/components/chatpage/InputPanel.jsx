@@ -2,7 +2,7 @@
 import { Send, Pencil } from "lucide-react";
 import { useState, useRef } from "react";
 
-export const InputPanel = ({ onSendMessage, onTogglePlayground }) => {
+export const InputPanel = ({ onSendMessage }) => {
   const [query, setQuery] = useState("");
   const [isComposing, setIsComposing] = useState(false);
   const textareaRef = useRef(null);
@@ -37,15 +37,7 @@ export const InputPanel = ({ onSendMessage, onTogglePlayground }) => {
           style={{ minHeight: "40px", maxHeight: "120px", overflowY: "auto" }}
         />
         <button
-          className="rounded-full hover:cursor-pointer bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 flex items-center justify-center w-10 h-10"
-          onClick={onTogglePlayground}
-          title="Open Playground"
-          type="button"
-        >
-          <Pencil className="h-4 w-4 text-white" />
-        </button>
-        <button
-          className="rounded-full hover:cursor-pointer bg-purple-700 flex items-center justify-center w-10 h-10 ml-1"
+          className="rounded-full hover:cursor-pointer bg-purple-700 flex items-center justify-center w-10 h-10"
           onClick={handleSend}
           type="button"
         >
